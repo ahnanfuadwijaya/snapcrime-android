@@ -1,3 +1,31 @@
 <resources>
     <string name="app_name">Snap Crime</string>
+    <string name="Search_hint">Cari Laporan</string>
+    <string name="search_hint">Cari Laporan</string>\
+
+
+    <string-array name="data_date">
+        <item>02-10-2020</item>
+        <item>03-10-2020</item>
+        <item>04-10-2020</item>
+        <item>06-10-2020</item>
+        <item>07-10-2020</item>
+    </string-array>
+
+    <string-array name="data_location">
+        <item> Jl.Mawar Putih </item>
+        <item> Jl.Mawar Putih </item>
+        <item> Jl.Mawar Putih </item>
+        <item> Jl.Mawar Putih </item>
+        <item> Jl.Mawar Putih </item>
+         </string-array>
+
+    <string-array name="data_lable">
+        <item>Pistol</item>
+        <item>Kapak</item>
+        <item>Pistol</item>
+        <item>Pisau</item>
+        <item>Kayu</item>
+    </string-array>
+
 </resources>

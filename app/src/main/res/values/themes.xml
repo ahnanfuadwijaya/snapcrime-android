@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.SnapCrime" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.SnapCrime" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/light_grey_500</item>
         <item name="colorPrimaryVariant">@color/light_grey_700</item>
         <item name="colorOnPrimary">@color/black</item>
@@ -21,5 +21,48 @@
         <item name="android:layout_height">@dimen/splash_logo_size</item>
         <item name="android:layout_width">@dimen/splash_logo_size</item>
         <item name="android:src">@drawable/ic_launcher_white</item>
+    </style>
+    <style name="Toolbar" parent="Theme.SnapCrime">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:textColorPrimary">?attr/colorOnPrimary</item>
+        <item name="android:textColorSecondary">?attr/colorOnPrimary</item>
+        <item name="android:itemTextAppearance">@style/MenuItem</item>
+    </style>
+    <style name="MenuItem">
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
+    <style name="InitObj">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="CornerRadius">
+        <item name="background">@drawable/ic_launcher_corner_radius_white</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="cornerRadius">50dp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Text" parent="InitObj">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <style name="Text.title">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Text.dec">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Text.Caption">
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="SearchBar" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="android:radius">50dp</item>
+        <item name="colorPrimary">@color/black</item>
+        <item name="boxStrokeColor">@color/black</item>
     </style>
 </resources>
