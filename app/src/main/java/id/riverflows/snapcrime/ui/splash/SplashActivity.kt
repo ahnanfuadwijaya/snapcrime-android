@@ -7,6 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import id.riverflows.snapcrime.R
 import id.riverflows.snapcrime.databinding.ActivitySplashBinding
 import id.riverflows.snapcrime.ui.home.HomeActivity
+import id.riverflows.snapcrime.ui.login.LoginActivity
 import id.riverflows.snapcrime.util.UtilConfigs.SPLASH_DURATION
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -23,7 +24,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(binding.root)
         lifecycleScope.launch(Dispatchers.Main){
             delay(SPLASH_DURATION)
-            startActivity(Intent(this@SplashActivity, HomeActivity::class.java))
+            startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
             finish()
         }
     }
