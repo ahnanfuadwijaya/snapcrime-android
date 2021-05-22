@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="splash_logo_size">300dp</dimen>
+    <dimen name="small_button_action">24dp</dimen>
+    <dimen name="root_title_text_size">24sp</dimen>
 </resources>

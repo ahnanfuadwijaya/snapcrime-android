@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.upload.UploadActivity">
+
+    <include
+        android:id="@+id/appbar"
+        layout="@layout/appbar_base" />
+
+    <TextView
+        android:id="@+id/tv_date_field"
+        style="@style/UploadField"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/title_date"
+        app:drawableStartCompat="@drawable/ic_date_event"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbar" />
+
+    <TextView
+        android:id="@+id/tv_date"
+        style="@style/Text.UploadCaption"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_date_field"
+        app:layout_constraintTop_toTopOf="@+id/tv_date_field"
+        tools:text="24 Mei 2021" />
+
+    <TextView
+        android:id="@+id/tv_location_field"
+        style="@style/UploadField"
+        android:text="@string/title_location"
+        app:drawableStartCompat="@drawable/ic_location"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="@+id/tv_date_field"
+        app:layout_constraintTop_toBottomOf="@+id/tv_date_field" />
+
+    <TextView
+        android:id="@+id/tv_location"
+        style="@style/Text.UploadCaption"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_location_field"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_location_field"
+        app:layout_constraintTop_toTopOf="@+id/tv_location_field"
+        tools:text="Jl. Medan Merdeka Timur No. 1" />
+
+    <TextView
+        android:id="@+id/tv_upload_field"
+        style="@style/UploadField"
+        app:drawableStartCompat="@drawable/ic_upload"
+        android:layout_marginTop="24dp"
+        android:text="@string/title_upload"
+        app:layout_constraintStart_toStartOf="@+id/tv_location_field"
+        app:layout_constraintTop_toBottomOf="@+id/tv_location_field" />
+
+    <ImageView
+        android:id="@+id/btn_add_image"
+        style="@style/SmallActionButton.Black"
+        android:layout_marginEnd="24dp"
+        android:src="@drawable/ic_add"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_upload_field"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_upload_field"
+        tools:ignore="ContentDescription" />
+
+    <LinearLayout
+        android:id="@+id/container_images_preview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_upload_field" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_create_report"
+        style="@style/WideButton"
+        tools:enabled="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/title_create_report"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/container_images_preview" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

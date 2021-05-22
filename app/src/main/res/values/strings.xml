@@ -1,7 +1,12 @@
 <resources>
     <string name="app_name">Snap Crime</string>
     <string name="Search_hint">Cari Laporan</string>
-    <string name="search_hint">Cari Laporan</string>\
+    <string name="search_hint">Cari Laporan</string>
+    <string name="title_date">Tanggal</string>
+    <string name="title_location">Lokasi</string>
+    <string name="title_upload">Upload</string>
+    <string name="title_create_report">Buat Laporan</string>
+    <string name="title_detail_report">Detail Laporan</string>\
 
 
     <string-array name="data_date">
@@ -18,7 +23,7 @@
         <item> Jl.Mawar Putih </item>
         <item> Jl.Mawar Putih </item>
         <item> Jl.Mawar Putih </item>
-         </string-array>
+    </string-array>
 
     <string-array name="data_lable">
         <item>Pistol</item>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_behavior="@string/bottom_sheet_behavior"
+    android:background="@drawable/bg_bottom_sheet"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/tv_bottom_sheet_title"
+        style="@style/BottomSheetTitle"
+        app:drawableTopCompat="@drawable/ic_peek"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Detail Laporan" />
+
+    <View
+        android:id="@+id/divider"
+        style="@style/BottomSheetDivider"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_bottom_sheet_title" />
+
+    <TextView
+        android:id="@+id/tv_date"
+        style="@style/UploadField"
+        android:layout_width="0dp"
+        android:layout_marginTop="16dp"
+        tools:text="24 Mei 2021"
+        app:drawableStartCompat="@drawable/ic_date_event"
+        app:layout_constraintEnd_toEndOf="@+id/divider"
+        app:layout_constraintStart_toStartOf="@+id/divider"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <TextView
+        android:id="@+id/tv_location"
+        style="@style/UploadField"
+        android:layout_width="0dp"
+        android:layout_marginTop="16dp"
+        tools:text="Jl. Medan Merdeka Timur No. 1"
+        app:drawableStartCompat="@drawable/ic_location"
+        app:layout_constraintEnd_toEndOf="@+id/divider"
+        app:layout_constraintStart_toStartOf="@+id/divider"
+        app:layout_constraintTop_toBottomOf="@+id/tv_date" />
+
+    <TextView
+        android:id="@+id/tv_label"
+        style="@style/UploadField"
+        android:layout_width="0dp"
+        android:layout_marginTop="16dp"
+        app:drawableStartCompat="@drawable/ic_label"
+        app:layout_constraintEnd_toEndOf="@+id/divider"
+        app:layout_constraintStart_toStartOf="@+id/divider"
+        app:layout_constraintTop_toBottomOf="@+id/tv_location"
+        tools:text="Pistol" />
+
+    <TextView
+        android:id="@+id/tv_status"
+        style="@style/UploadField"
+        android:layout_width="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        app:drawableStartCompat="@drawable/ic_task_check"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/divider"
+        app:layout_constraintStart_toStartOf="@+id/divider"
+        app:layout_constraintTop_toBottomOf="@+id/tv_label"
+        tools:text="Selesai" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

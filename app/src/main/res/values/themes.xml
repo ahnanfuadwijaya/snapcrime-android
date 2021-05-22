@@ -50,6 +50,9 @@
         <item name="android:textSize">24sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="Text.title.upload">
+
+    </style>
 
     <style name="Text.dec">
         <item name="android:textSize">20sp</item>
@@ -59,10 +62,81 @@
     <style name="Text.Caption">
         <item name="android:textSize">12sp</item>
     </style>
+
+    <style name="UploadField">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="drawableTint">@color/black</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="Text.UploadCaption">
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:textAlignment">textEnd</item>
+        <item name="android:textColor">@color/light_grey_700</item>
+    </style>
+
     <style name="SearchBar" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeWidth">1dp</item>
         <item name="android:radius">50dp</item>
         <item name="colorPrimary">@color/black</item>
         <item name="boxStrokeColor">@color/black</item>
+    </style>
+
+    <style name="SmallActionButton">
+        <item name="android:layout_width">@dimen/small_button_action</item>
+        <item name="android:layout_height">@dimen/small_button_action</item>
+    </style>
+    <style name="SmallActionButton.Black">
+        <item name="android:tint">@color/black</item>
+    </style>
+
+    <style name="WideButton">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/bg_custom_button</item>
+    </style>
+
+    <style name="BackButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:src">@drawable/ic_back</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:tint">@color/black</item>
+    </style>
+
+    <style name="AppbarTitle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/root_title_text_size</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="BottomSheetTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="drawableTint">@color/black</item>
+    </style>
+
+    <style name="BottomSheetDivider">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:background">@color/black</item>
     </style>
 </resources>

@@ -7,5 +7,5 @@ import kotlinx.android.parcel.Parcelize
 data class Case(
     val date: String,
     val location: String,
-    val lable: String
+    val label: String
 ) : Parcelable

@@ -67,7 +67,7 @@
                 app:layout_constraintStart_toEndOf="@+id/iivPhoto"
                 app:layout_constraintTop_toBottomOf="@+id/imageView3"
                 app:layout_constraintVertical_bias="0.0"
-                app:srcCompat="@drawable/ic_lable" />
+                app:srcCompat="@drawable/ic_label" />
 
             <TextView
                 android:id="@+id/tvDate"

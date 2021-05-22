@@ -26,7 +26,7 @@ class ListCaseAdapter(private val listCase: ArrayList<Case>) : RecyclerView.Adap
             with(itemView){
                 tvDate.text = Case.date
                 tvLocation.text = Case.location
-                tvLable.text = Case.lable
+                tvLable.text = Case.label
             }
         }
     }
