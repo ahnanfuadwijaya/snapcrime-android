@@ -93,6 +93,7 @@
     </style>
     <style name="SmallActionButton.Black">
         <item name="android:tint">@color/black</item>
+        <item name="android:backgroundTint">@color/black</item>
     </style>
 
     <style name="WideButton">

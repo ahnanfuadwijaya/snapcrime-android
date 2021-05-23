@@ -8,10 +8,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class UploadViewModel: ViewModel() {
-    private val _dummyData = MutableLiveData<String>()
-    val dummyData: LiveData<String> = _dummyData
+    private val _uploadResponse = MutableLiveData<String>()
+    val uploadResponse: LiveData<String> = _uploadResponse
 
-    fun getDummyData() = viewModelScope.launch(Dispatchers.IO){
-        _dummyData.postValue("Dummy Data")
+    fun uploadData() = viewModelScope.launch(Dispatchers.IO){
+        _uploadResponse.postValue("Dummy Response")
     }
 }

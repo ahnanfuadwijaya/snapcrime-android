@@ -6,7 +6,11 @@
     <string name="title_location">Lokasi</string>
     <string name="title_upload">Upload</string>
     <string name="title_create_report">Buat Laporan</string>
-    <string name="title_detail_report">Detail Laporan</string>\
+    <string name="title_detail_report">Detail Laporan</string>
+    <string name="action_cancel">Batal</string>
+    <string name="action_ok">OK</string>
+    <string name="action_choose">Pilih</string>
+    <string name="hint_enter_location">Masukkan lokasi…</string>\
 
 
     <string-array name="data_date">
