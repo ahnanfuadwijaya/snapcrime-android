@@ -1,20 +1,18 @@
 package id.riverflows.snapcrime.ui.upload
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.EditText
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import id.riverflows.snapcrime.R
 import id.riverflows.snapcrime.databinding.ActivityUploadBinding
+import id.riverflows.snapcrime.ui.custom.SingleTextInputDialog
 import id.riverflows.snapcrime.util.UtilConstants.DATE_FORMAT
 import id.riverflows.snapcrime.util.UtilConstants.MIME_TYPE_IMAGE
 import id.riverflows.snapcrime.util.UtilConstants.UPLOAD_IMAGES_MAX
@@ -23,18 +21,18 @@ import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.*
 
-class UploadActivity : AppCompatActivity() {
+class UploadActivity : AppCompatActivity(), SingleTextInputDialog.OnSubmitSingleTextInputDialog {
     private lateinit var binding: ActivityUploadBinding
     private lateinit var viewModel: UploadViewModel
     private lateinit var datePickerDialog: DatePickerDialog
-    private lateinit var locationInputDialog: AlertDialog
+    private lateinit var locationInputDialog: SingleTextInputDialog
     private var date = ""
     private var location = ""
     private val imagesUri = mutableListOf<Uri?>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initDatePickerDialog()
-        initLocationInputDialog()
+        initLocationDialog()
         setupView()
         obtainViewModel()
         observeViewModel()
@@ -50,7 +48,7 @@ class UploadActivity : AppCompatActivity() {
             showDatePickerDialog()
         }
         binding.tvLocationField.setOnClickListener {
-            showLocationTextInputDialog()
+            showLocationDialog()
         }
         binding.btnAddImage.setOnClickListener {
             pickImagesIntent()
@@ -88,26 +86,13 @@ class UploadActivity : AppCompatActivity() {
         datePickerDialog = DatePickerDialog(this, style, datePickerOnSetListener, year, month, day)
     }
 
-    @SuppressLint("InflateParams")
-    private fun initLocationInputDialog(){
-        val builder = AlertDialog.Builder(
-            this, R.style.MaterialAlertDialog_MaterialComponents
-        ).apply {
-            val contentView = layoutInflater.inflate(R.layout.dialog_text_input, null)
-            val edtInputText = contentView.findViewById<EditText>(R.id.edt_input_text_dialog)
-            edtInputText.hint = getString(R.string.hint_enter_location)
-            setView(contentView)
-            setPositiveButton(getString(R.string.action_ok)){ dialog, _ ->
-                location = edtInputText.text.toString()
-                binding.tvLocation.text = location
-                dialog.dismiss()
-                checkIsFormValid()
-            }
-            setNeutralButton(getString(R.string.action_cancel)){ dialog, _ ->
-                dialog.dismiss()
-            }
-        }
-        locationInputDialog = builder.create()
+    private fun showLocationDialog(){
+        locationInputDialog.show(supportFragmentManager, LOCATION_DIALOG_TAG)
+    }
+
+    private fun initLocationDialog(){
+        locationInputDialog = SingleTextInputDialog()
+        locationInputDialog.setOnSubmitSingleTextInputDialog(this)
     }
 
     private val datePickerOnSetListener = DatePickerDialog.OnDateSetListener {
@@ -136,14 +121,6 @@ class UploadActivity : AppCompatActivity() {
         }
     }
 
-    private fun showLocationTextInputDialog(){
-        Timber.d("TextInputDialog shown")
-        val width = resources.displayMetrics.widthPixels
-        val height = (resources.displayMetrics.heightPixels * 0.60).toInt()
-        locationInputDialog.show()
-        locationInputDialog.window?.setLayout(width, height)
-    }
-
     private fun isFormValid() = date.isNotBlank() && location.isNotBlank() && imagesUri.isNotEmpty()
 
 
@@ -170,7 +147,8 @@ class UploadActivity : AppCompatActivity() {
                                 imagesUri.add(imageUri)
                             }
                         }else{
-                            //TODO show upload images limit reached snack bar
+                            Timber.d("Images reach the limit")
+                            //TODO show snackBar: upload images limit reached
                         }
                     }
                 }else{
@@ -179,7 +157,8 @@ class UploadActivity : AppCompatActivity() {
                         val imageUri = it.data
                         imagesUri.add(imageUri)
                     }else{
-                        //TODO show upload images limit reached snack bar
+                        Timber.d("Images reach the limit")
+                        //TODO show snackBar: upload images limit reached
                     }
                 }
                 inflateImagesPreview(imagesUri)
@@ -208,5 +187,14 @@ class UploadActivity : AppCompatActivity() {
                 addView(view, i)
             }
         }
+    }
+    companion object{
+        const val LOCATION_DIALOG_TAG = "LOCATION DIALOG"
+    }
+
+    override fun onSubmitDialog(data: String) {
+        location = data
+        binding.tvLocation.text = location
+        checkIsFormValid()
     }
 }
