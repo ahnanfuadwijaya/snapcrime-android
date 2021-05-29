@@ -188,13 +188,14 @@ class UploadActivity : AppCompatActivity(), SingleTextInputDialog.OnSubmitSingle
             }
         }
     }
-    companion object{
-        const val LOCATION_DIALOG_TAG = "LOCATION DIALOG"
-    }
 
     override fun onSubmitDialog(data: String) {
         location = data
         binding.tvLocation.text = location
         checkIsFormValid()
+    }
+
+    companion object{
+        const val LOCATION_DIALOG_TAG = "LOCATION DIALOG"
     }
 }
