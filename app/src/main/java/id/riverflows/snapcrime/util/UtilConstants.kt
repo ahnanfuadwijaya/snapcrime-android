@@ -6,4 +6,5 @@ object UtilConstants {
     const val MIME_TYPE_IMAGE = "image/*"
     const val UPLOAD_IMAGES_MAX = 5
     const val DATE_FORMAT = "dd-MM-yyyy"
+    const val EXTRA_CASE_ID = "extra_case_id"
 }

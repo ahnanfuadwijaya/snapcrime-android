@@ -9,6 +9,11 @@ import id.riverflows.snapcrime.data.Case
 import kotlinx.android.synthetic.main.item_row.view.*
 
 class ListCaseAdapter(private val listCase: ArrayList<Case>) : RecyclerView.Adapter<ListCaseAdapter.ListViewHolder>() {
+    private lateinit var onItemClickCallback: OnItemClickCallback
+
+    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback){
+        this.onItemClickCallback = onItemClickCallback
+    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ListViewHolder {
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.item_row, viewGroup, false)
@@ -22,12 +27,17 @@ class ListCaseAdapter(private val listCase: ArrayList<Case>) : RecyclerView.Adap
     override fun getItemCount(): Int = listCase.size
 
     inner class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(Case: Case) {
+        fun bind(case: Case) {
             with(itemView){
-                tvDate.text = Case.date
-                tvLocation.text = Case.location
-                tvLable.text = Case.label
+                tvDate.text = case.date
+                tvLocation.text = case.location
+                tvLable.text = case.label
             }
+            itemView.setOnClickListener { onItemClickCallback.onItemClicked(case.id) }
         }
+    }
+
+    interface OnItemClickCallback{
+        fun onItemClicked(id: Long)
     }
 }
