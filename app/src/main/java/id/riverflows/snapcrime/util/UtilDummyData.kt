@@ -194,12 +194,24 @@ object UtilDummyData {
             "sample_image"
         )
     )
-    fun getAuthLoginResponse() = LoginResponse(
-        200,
-        true,
-        "Login Success",
-        "abcdefg123!@#"
-    )
+    fun getAuthLoginResponse(username: String, password: String): LoginResponse{
+        return if(username =="user" && password == "user") {
+            LoginResponse(
+                200,
+                true,
+                "Login Success",
+                "abcdefg123!@#"
+            )
+        }
+        else {
+            LoginResponse(
+                401,
+                false,
+                "Incorrect username or password",
+                null
+            )
+        }
+    }
     fun getCasesListResponse() = CaseListResponse(
         200,
         true,
