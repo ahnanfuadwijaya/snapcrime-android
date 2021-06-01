@@ -4,16 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import id.riverflows.snapcrime.data.DetailCase
+import id.riverflows.snapcrime.data.response.DetailCaseResponse
 import id.riverflows.snapcrime.util.UtilDummyData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class DetailViewModel: ViewModel() {
-    private val _detailCase = MutableLiveData<DetailCase>()
-    val detailCase: LiveData<DetailCase> = _detailCase
+    private val _detailCaseResponse = MutableLiveData<DetailCaseResponse>()
+    val detailCaseResponse: LiveData<DetailCaseResponse> = _detailCaseResponse
 
-    fun getDetailCase() = viewModelScope.launch(Dispatchers.IO){
-        _detailCase.postValue(UtilDummyData.getDetailCase())
+    fun getDetailCaseResponse(id: Long) = viewModelScope.launch(Dispatchers.IO){
+        _detailCaseResponse.postValue(UtilDummyData.getDetailCaseResponse(id))
     }
 }
