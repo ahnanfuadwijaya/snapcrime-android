@@ -11,7 +11,8 @@
     <string name="action_ok">OK</string>
     <string name="action_choose">Pilih</string>
     <string name="hint_enter_location">Masukkan lokasi…</string>
-    <string name="title_input_location">Masukkan Lokasi</string>\
+    <string name="title_input_location">Masukkan Lokasi</string>
+    <string name="title_create_case_report">Buat Laporan</string>\
 
 
     <string-array name="data_date">
