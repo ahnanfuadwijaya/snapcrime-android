@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "74440126337",
+    "project_id": "snapcrime",
+    "storage_bucket": "snapcrime.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:74440126337:android:e29a3cf050697b08df8280",
+        "android_client_info": {
+          "package_name": "id.riverflows.snapcrime"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "74440126337-favjdd28cu3t9jhnqq3rg2f987t0q659.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPjbdm3252OQ5nGiSm8zQgiETrQV058uU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "74440126337-favjdd28cu3t9jhnqq3rg2f987t0q659.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
