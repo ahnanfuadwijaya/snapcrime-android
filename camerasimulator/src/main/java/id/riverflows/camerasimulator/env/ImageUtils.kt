@@ -50,7 +50,7 @@ object ImageUtils {
         }
     }
 
-    fun convertYUV420SPToARGB8888(input: ByteArray, width: Int, height: Int, output: Array<Int>) {
+    fun convertYUV420SPToARGB8888(input: ByteArray, width: Int, height: Int, output: IntArray) {
         val frameSize = width * height;
         for(j in 0 until height){
             val yp = 0
@@ -105,15 +105,15 @@ object ImageUtils {
     }
 
     fun convertYUV420ToARGB8888(
-        yData: ByteArray,
-        uData: ByteArray,
-        vData: ByteArray,
+        yData: ByteArray?,
+        uData: ByteArray?,
+        vData: ByteArray?,
         width: Int,
         height: Int,
         yRowStride: Int,
         uvRowStride: Int,
         uvPixelStride: Int,
-        out: Array<Int>
+        out: IntArray
     ){
         var yp = 0
         for (j in 0 until height) {
@@ -122,8 +122,8 @@ object ImageUtils {
             for (i in 0 until width) {
                 val uvOffset = pUV + (i shr 1) * uvPixelStride
                 out[yp++] = YUV2RGB(
-                    0xff and yData[pY + i].toInt(), 0xff and uData[uvOffset]
-                        .toInt(), 0xff and vData[uvOffset].toInt()
+                    0xff and (yData?.get(pY + i)?.toInt()!!), 0xff and (uData?.get(uvOffset)
+                        ?.toInt()!!), 0xff and (vData?.get(uvOffset)?.toInt()!!)
                 )
             }
         }

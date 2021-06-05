@@ -5,6 +5,7 @@ import android.hardware.Camera
 import android.hardware.Camera.CameraInfo
 import android.os.Bundle
 import android.os.HandlerThread
+import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
 import android.view.*
@@ -48,7 +49,7 @@ class LegacyCameraConnectionFragment(
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        textureView = view.findViewById<View>(R.id.texture) as AutoFitTextureView
+        textureView = view.findViewById(R.id.texture)
     }
 
     override fun onResume() {
@@ -76,6 +77,7 @@ class LegacyCameraConnectionFragment(
         super.onPause()
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun startCamera(){
         val index: Int = getCameraId()
         camera = Camera.open(index)
@@ -91,13 +93,13 @@ class LegacyCameraConnectionFragment(
                         Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
                 }
                 val cameraSizes = parameters.supportedPreviewSizes
-                val sizes = arrayOf<Size>()
-                var i = 0
-                for (size in cameraSizes) {
-                    sizes[i++] = Size(size.width, size.height)
+                val sizes = arrayOfNulls<Size>(cameraSizes.size)
+                for ((i, size) in cameraSizes.withIndex()) {
+                    Log.d("LegacyCameraConFragment", i.toString())
+                    sizes[i] = Size(size.width, size.height)
                 }
                 val previewSize = CameraConnectionFragment.chooseOptimalSize(
-                    sizes, desiredSize.width, desiredSize.height
+                    sizes as Array<Size>, desiredSize.width, desiredSize.height
                 )
                 parameters.setPreviewSize(previewSize.width, previewSize.height)
                 it.setDisplayOrientation(90)

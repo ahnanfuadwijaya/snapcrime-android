@@ -31,8 +31,8 @@ abstract class CameraActivity: AppCompatActivity(), CompoundButton.OnCheckedChan
     private var handlerThread: HandlerThread? = null
     private var useCamera2API = true
     private var isProcessingFrame = false
-    private val yuvBytes = arrayOf<ByteArray>()
-    private var rgbBytes = arrayOf<Int>()
+    private val yuvBytes = arrayOfNulls<ByteArray>(3)
+    private lateinit var rgbBytes: IntArray
     private var yRowStride = 0
     private var postInferenceCallback: Runnable? = null
     private lateinit var imageConverter: Runnable
@@ -43,9 +43,9 @@ abstract class CameraActivity: AppCompatActivity(), CompoundButton.OnCheckedChan
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         setContentView(R.layout.activity_simulator_main)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayShowTitleEnabled(false)
         if (hasPermission()) {
             setFragment()
         } else {
@@ -112,7 +112,7 @@ abstract class CameraActivity: AppCompatActivity(), CompoundButton.OnCheckedChan
             val previewSize = camera?.parameters?.previewSize
             previewHeight = previewSize?.height ?: 0
             previewWidth = previewSize?.width ?: 0
-            rgbBytes = arrayOf(previewWidth * previewHeight)
+            rgbBytes = IntArray(previewWidth * previewHeight)
             onPreviewSizeChosen(Size(previewSize?.width ?: 0, previewSize?.height ?: 0), 90)
         } catch (e: Exception) {
             LOGGER.e(e, "Exception!")
@@ -144,7 +144,7 @@ abstract class CameraActivity: AppCompatActivity(), CompoundButton.OnCheckedChan
         if (previewWidth == 0 || previewHeight == 0) {
             return
         }
-        rgbBytes = arrayOf(previewWidth * previewHeight)
+        rgbBytes = IntArray(previewWidth * previewHeight)
         try {
             val image = reader!!.acquireLatestImage() ?: return
             if (isProcessingFrame) {
@@ -154,7 +154,7 @@ abstract class CameraActivity: AppCompatActivity(), CompoundButton.OnCheckedChan
             isProcessingFrame = true
             Trace.beginSection("imageAvailable")
             val planes = image.planes
-            fillBytes(planes)
+            fillBytes(planes, yuvBytes)
             yRowStride = planes[0].rowStride
             val uvRowStride = planes[1].rowStride
             val uvPixelStride = planes[1].pixelStride
@@ -184,14 +184,17 @@ abstract class CameraActivity: AppCompatActivity(), CompoundButton.OnCheckedChan
         Trace.endSection()
     }
 
-    protected fun fillBytes(planes: Array<Image.Plane>){
+    protected fun fillBytes(planes: Array<Image.Plane>, yuvBytes: Array<ByteArray?>){
         // Because of the variable row stride it's not possible to know in
         // advance the actual necessary dimensions of the yuv planes.
         for (i in planes.indices) {
             val buffer: ByteBuffer = planes[i].buffer
             LOGGER.d("Initializing buffer %d at size %d", i, buffer.capacity())
             yuvBytes[i] = ByteArray(buffer.capacity())
-            buffer[yuvBytes[i]]
+            if(yuvBytes[i] != null)
+            yuvBytes[i]?.let {
+                buffer.get(it)
+            }
         }
     }
 
@@ -201,7 +204,7 @@ abstract class CameraActivity: AppCompatActivity(), CompoundButton.OnCheckedChan
 
 
 
-    protected fun getRgbBytes(): Array<Int>{
+    protected fun getRgbBytes(): IntArray{
         imageConverter.run()
         return rgbBytes
     }

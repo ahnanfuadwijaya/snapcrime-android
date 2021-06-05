@@ -1,11 +1,9 @@
 package id.riverflows.camerasimulator.ui
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Matrix
-import android.graphics.Typeface
+import android.graphics.*
 import android.media.ImageReader.OnImageAvailableListener
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Size
 import android.util.TypedValue
 import android.widget.Toast
@@ -18,6 +16,7 @@ import id.riverflows.camerasimulator.tracking.MultiBoxTracker
 import id.riverflows.lib_task_api.detection.tflite.Detector
 import id.riverflows.lib_task_api.detection.tflite.TFLiteObjectDetectionAPIModel
 import java.io.IOException
+import java.util.*
 
 class SimulatorMainActivity : CameraActivity(), OnImageAvailableListener {
     private enum class DetectorMode {
@@ -27,9 +26,9 @@ class SimulatorMainActivity : CameraActivity(), OnImageAvailableListener {
     private var sensorOrientation: Int = 0
     private lateinit var detector: Detector
     private var lastProcessingTimeMs: Long = 0
-    private var rgbFrameBitmap: Bitmap? = null
-    private var croppedBitmap: Bitmap? = null
-    private var cropCopyBitmap: Bitmap? = null
+    private lateinit var rgbFrameBitmap: Bitmap
+    private lateinit var croppedBitmap: Bitmap
+    private lateinit var cropCopyBitmap: Bitmap
     private var computingDetection = false
     private var timestamp: Long = 0
     private lateinit var frameToCropTransform: Matrix
@@ -43,16 +42,82 @@ class SimulatorMainActivity : CameraActivity(), OnImageAvailableListener {
     }
 
     override fun processImage() {
-        TODO("Not yet implemented")
+        ++timestamp
+        val currTimestamp = timestamp
+        trackingOverlay.postInvalidate()
+
+        // No mutex needed as this method is not reentrant.
+
+        // No mutex needed as this method is not reentrant.
+        if (computingDetection) {
+            readyForNextImage()
+            return
+        }
+        computingDetection = true
+        LOGGER.i("Preparing image $currTimestamp for detection in bg thread.")
+
+        rgbFrameBitmap.setPixels(
+            getRgbBytes(),
+            0,
+            previewWidth,
+            0,
+            0,
+            previewWidth,
+            previewHeight
+        )
+
+        readyForNextImage()
+
+        val canvas = Canvas(croppedBitmap)
+        canvas.drawBitmap(rgbFrameBitmap, frameToCropTransform, null)
+        // For examining the actual TF input.
+        // For examining the actual TF input.
+        if (SAVE_PREVIEW_BITMAP) {
+            ImageUtils.saveBitmap(croppedBitmap)
+        }
+
+        runInBackground {
+            LOGGER.i("Running detection on image $currTimestamp")
+            val startTime = SystemClock.uptimeMillis()
+            val results = detector.recognizeImage(croppedBitmap)
+            lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime
+            cropCopyBitmap = Bitmap.createBitmap(croppedBitmap)
+            val cpyCanvas = Canvas(cropCopyBitmap)
+            val paint = Paint()
+            paint.color = Color.RED
+            paint.style = Paint.Style.STROKE
+            paint.strokeWidth = 2.0f
+            var minimumConfidence: Float = MINIMUM_CONFIDENCE_TF_OD_API
+            when (MODE) {
+                DetectorMode.TF_OD_API -> minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API
+            }
+            val mappedRecognitions: MutableList<Detector.Recognition> =
+                ArrayList()
+            for (result in results!!) {
+                val location = result!!.getLocation()
+                if (location != null && result.getConfidence()!! >= minimumConfidence) {
+                    cpyCanvas.drawRect(location, paint)
+                    cropToFrameTransform.mapRect(location)
+                    result.setLocation(location)
+                    mappedRecognitions.add(result)
+                }
+            }
+            tracker.trackResults(mappedRecognitions.toList(), currTimestamp)
+            trackingOverlay.postInvalidate()
+            computingDetection = false
+            runOnUiThread {
+                /*showFrameInfo(previewWidth.toString() + "x" + previewHeight)
+                showCropInfo(
+                    cropCopyBitmap.getWidth().toString() + "x" + cropCopyBitmap.getHeight()
+                )
+                showInference(lastProcessingTimeMs.toString() + "ms")*/
+            }
+        }
     }
 
-    override fun getLayoutId(): Int {
-        TODO("Not yet implemented")
-    }
+    override fun getLayoutId(): Int = R.layout.fragment_camera_connection_tracking
 
-    override fun getDesiredPreviewFrameSize(): Size {
-        TODO("Not yet implemented")
-    }
+    override fun getDesiredPreviewFrameSize(): Size = DESIRED_PREVIEW_SIZE
 
     override fun onPreviewSizeChosen(size: Size, rotation: Int) {
         val textSizePx = TypedValue.applyDimension(
@@ -65,7 +130,7 @@ class SimulatorMainActivity : CameraActivity(), OnImageAvailableListener {
 
         tracker = MultiBoxTracker(this)
 
-        var cropSize: Int =
+        val cropSize: Int =
             TF_OD_API_INPUT_SIZE
 
         try {
@@ -134,11 +199,21 @@ class SimulatorMainActivity : CameraActivity(), OnImageAvailableListener {
     }
 
     override fun setNumThreads(numThreads: Int) {
-        TODO("Not yet implemented")
+        runInBackground { detector.setNumThreads(numThreads) }
     }
 
     override fun setUseNNAPI(isChecked: Boolean) {
-        TODO("Not yet implemented")
+        runInBackground {
+            try {
+                detector.setUseNNAPI(isChecked)
+            } catch (e: UnsupportedOperationException) {
+                LOGGER.e(
+                    e,
+                    "Failed to set \"Use NNAPI\"."
+                )
+                runOnUiThread { Toast.makeText(this, e.message, Toast.LENGTH_LONG).show() }
+            }
+        }
     }
 
     companion object{

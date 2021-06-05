@@ -32,7 +32,7 @@ class Logger{
     }
 
     fun toMessage(format: String, vararg args: Any): String {
-        return "$messagePrefix${(if(args.isNotEmpty()) String.format(format, args) else format)}"
+        return "$messagePrefix${args}"
     }
 
     @SuppressLint("LogTagMismatch")
