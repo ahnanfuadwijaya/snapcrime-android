@@ -10,8 +10,8 @@ import id.riverflows.snapcrime.data.DetailCase
 import id.riverflows.snapcrime.databinding.ActivityDetailBinding
 import id.riverflows.snapcrime.util.UtilConstants.BOTT_SHEET_PEEK_HEIGHT
 import id.riverflows.snapcrime.util.UtilConstants.DEF_TYPE_RAW
+import id.riverflows.snapcrime.util.UtilSnackBar.showIndeterminateSnackBar
 import kotlinx.android.synthetic.main.item_row.*
-import timber.log.Timber
 
 class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
@@ -43,8 +43,9 @@ class DetailActivity : AppCompatActivity() {
             if(it.data != null){
                 bindDataWithView(it.data)
             }else{
-                Timber.d("Data Not Found")
-                //TODO show snackBar: Data Not Found
+                val action = getString(R.string.action_ok)
+                val message = getString(R.string.error_no_data)
+                showIndeterminateSnackBar(binding.root, action, message)
             }
         }
     }

@@ -14,7 +14,7 @@ import id.riverflows.lib_task_api.detection.tflite.Detector.Recognition
 import java.util.*
 
 class MultiBoxTracker(context: Context) {
-    val screenRect: MutableList<Pair<Float, RectF>> = LinkedList()
+    private val screenRect: MutableList<Pair<Float, RectF>> = LinkedList()
     private val availableColors: Queue<Int> = LinkedList()
     private val trackedObjects: MutableList<TrackedRecognition> = LinkedList()
     private val boxPaint = Paint()

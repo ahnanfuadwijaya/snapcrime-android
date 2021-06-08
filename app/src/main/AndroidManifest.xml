@@ -30,10 +30,11 @@
         <activity
             android:name=".ui.home.HomeActivity"
             android:exported="true"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
             android:parentActivityName=".ui.login.LoginActivity" />
         <activity
             android:name=".ui.splash.SplashActivity"
-            android:theme="@style/Theme.MaterialComponents.NoActionBar">
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,6 +43,7 @@
         </activity>
         <activity
             android:name=".ui.login.LoginActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
             android:parentActivityName=".ui.splash.SplashActivity" />
     </application>
 

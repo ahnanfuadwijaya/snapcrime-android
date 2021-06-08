@@ -5,10 +5,12 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import id.riverflows.snapcrime.R
 import id.riverflows.snapcrime.databinding.ActivityUploadBinding
@@ -16,6 +18,11 @@ import id.riverflows.snapcrime.ui.custom.SingleTextInputDialog
 import id.riverflows.snapcrime.util.UtilConstants.DATE_FORMAT
 import id.riverflows.snapcrime.util.UtilConstants.MIME_TYPE_IMAGE
 import id.riverflows.snapcrime.util.UtilConstants.UPLOAD_IMAGES_MAX
+import id.riverflows.snapcrime.util.UtilSnackBar.getMessageFromErrorCode
+import id.riverflows.snapcrime.util.UtilSnackBar.showIndeterminateSnackBar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
@@ -54,9 +61,22 @@ class UploadActivity : AppCompatActivity(), SingleTextInputDialog.OnSubmitSingle
             pickImagesIntent()
         }
         binding.btnCreateReport.setOnClickListener {
-            Timber.d("CreateReportButton clicked")
+            setEnableCreateReportButton(false)
+            showUploadProgressBar(true)
             uploadData()
+            lifecycleScope.launch(Dispatchers.IO){
+                delay(4000)
+                showUploadProgressBar(false)
+                setEnableCreateReportButton(true)
+                val action = getString(R.string.action_ok)
+                val message = getMessageFromErrorCode(applicationContext, 200)
+                showIndeterminateSnackBar(binding.root, action, message)
+            }
         }
+    }
+
+    private fun showUploadProgressBar(isLoading: Boolean){
+        binding.progressUpload.visibility = if(isLoading) View.VISIBLE else View.INVISIBLE
     }
 
     private fun checkIsFormValid(){
@@ -147,8 +167,9 @@ class UploadActivity : AppCompatActivity(), SingleTextInputDialog.OnSubmitSingle
                                 imagesUri.add(imageUri)
                             }
                         }else{
-                            Timber.d("Images reach the limit")
-                            //TODO show snackBar: upload images limit reached
+                            val action = getString(R.string.action_ok)
+                            val message = getString(R.string.error_upload_limit)
+                            showIndeterminateSnackBar(binding.root, action, message)
                         }
                     }
                 }else{
@@ -157,8 +178,9 @@ class UploadActivity : AppCompatActivity(), SingleTextInputDialog.OnSubmitSingle
                         val imageUri = it.data
                         imagesUri.add(imageUri)
                     }else{
-                        Timber.d("Images reach the limit")
-                        //TODO show snackBar: upload images limit reached
+                        val action = getString(R.string.action_ok)
+                        val message = getString(R.string.error_upload_limit)
+                        showIndeterminateSnackBar(binding.root, action, message)
                     }
                 }
                 inflateImagesPreview(imagesUri)

@@ -11,16 +11,14 @@ import java.io.IOException
 import java.nio.MappedByteBuffer
 import java.util.*
 
-class TFLiteObjectDetectionAPIModel(
+class TFLiteObjectDetectionAPIModel @Throws(IOException::class)
+constructor(
     context: Context,
-    modelFilename: String,
-    labelFilename: String,
-    inputSize: Int,
-    isQuantized: Boolean
+    modelFilename: String
 ) : Detector {
-    private var modelBuffer: MappedByteBuffer
-    private var objectDetector: ObjectDetector
-    private var optionsBuilder: ObjectDetectorOptions.Builder
+    private val modelBuffer: MappedByteBuffer
+    private var objectDetector: ObjectDetector?
+    private val optionsBuilder: ObjectDetectorOptions.Builder
 
     init {
         try{
@@ -32,39 +30,36 @@ class TFLiteObjectDetectionAPIModel(
         }
     }
 
-
-    override fun recognizeImage(bitmap: Bitmap?): List<Detector.Recognition?> {
-        // Log this method so that it can be analyzed with systrace.
+    override fun recognizeImage(bitmap: Bitmap): List<Detector.Recognition> {
         Trace.beginSection("recognizeImage")
-        val results = objectDetector.detect(TensorImage.fromBitmap(bitmap))
-        // Converts a list of {@link Detection} objects into a list of {@link Recognition} objects
-        // to match the interface of other inference method, such as using the <a
-        // href="https://github.com/tensorflow/examples/tree/master/lite/examples/object_detection/android/lib_interpreter">TFLite
-        // Java API.</a>.
+        val results = objectDetector?.detect(TensorImage.fromBitmap(bitmap))
         val recognitions: ArrayList<Detector.Recognition> = ArrayList<Detector.Recognition>()
-        for ((cnt, detection) in results.withIndex()) {
-            recognitions.add(
-                Detector.Recognition(
-                    "" + cnt,
-                    detection.categories[0].label,
-                    detection.categories[0].score,
-                    detection.boundingBox
+        results?.let {
+            for ((index, detection) in it.withIndex()) {
+                recognitions.add(
+                    Detector.Recognition(
+                        "$index",
+                        detection.categories[0].label,
+                        detection.categories[0].score,
+                        detection.boundingBox
+                    )
                 )
-            )
+            }
         }
-        Trace.endSection() // "recognizeImage"
+        Trace.endSection()
         return recognitions
     }
 
-    override fun enableStatLogging(debug: Boolean) {}
+    override fun enableStatLogging(logStats: Boolean) {}
 
     override fun getStatString(): String = ""
 
     override fun close() {
-        objectDetector.close()
+        objectDetector?.close()
     }
 
     override fun setNumThreads(numThreads: Int) {
+        if(objectDetector == null) return
         optionsBuilder.setNumThreads(numThreads)
         recreateDetector()
     }
@@ -77,7 +72,7 @@ class TFLiteObjectDetectionAPIModel(
     }
 
     private fun recreateDetector(){
-        objectDetector.close()
+        objectDetector?.close()
         objectDetector =
             ObjectDetector.createFromBufferAndOptions(modelBuffer, optionsBuilder.build())
     }
@@ -94,7 +89,7 @@ class TFLiteObjectDetectionAPIModel(
             inputSize: Int,
             isQuantized: Boolean
         ): TFLiteObjectDetectionAPIModel{
-            return TFLiteObjectDetectionAPIModel(context, modelFilename, labelFilename, inputSize, isQuantized)
+            return TFLiteObjectDetectionAPIModel(context, modelFilename)
         }
     }
 }

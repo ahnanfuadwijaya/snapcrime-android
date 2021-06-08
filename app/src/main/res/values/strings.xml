@@ -12,7 +12,16 @@
     <string name="action_choose">Pilih</string>
     <string name="hint_enter_location">Masukkan lokasi…</string>
     <string name="title_input_location">Masukkan Lokasi</string>
-    <string name="title_create_case_report">Buat Laporan</string>\
+    <string name="title_create_case_report">Buat Laporan</string>
+    <string name="error_1xx">Melanjutkan proses</string>
+    <string name="error_2xx">Permintaan sukses</string>
+    <string name="error_3xx">Mengalihkan permintaan</string>
+    <string name="error_4xx">Tidak dapat menyelesaikan permintaan</string>
+    <string name="error_5xx">Server bermasalah</string>
+    <string name="error_network">Periksa jaringan Anda</string>
+    <string name="error_unknown">Terjadi masalah</string>
+    <string name="error_upload_limit">Mencapai batas unggah file</string>
+    <string name="error_no_data">Tidak ada data</string>
 
 
     <string-array name="data_date">

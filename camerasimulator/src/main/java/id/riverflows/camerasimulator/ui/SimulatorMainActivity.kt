@@ -17,6 +17,7 @@ import id.riverflows.lib_task_api.detection.tflite.Detector
 import id.riverflows.lib_task_api.detection.tflite.TFLiteObjectDetectionAPIModel
 import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 
 class SimulatorMainActivity : CameraActivity(), OnImageAvailableListener {
     private enum class DetectorMode {
@@ -91,18 +92,18 @@ class SimulatorMainActivity : CameraActivity(), OnImageAvailableListener {
             when (MODE) {
                 DetectorMode.TF_OD_API -> minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API
             }
-            val mappedRecognitions: MutableList<Detector.Recognition> =
+            val mappedRecognitions: ArrayList<Detector.Recognition> =
                 ArrayList()
-            for (result in results!!) {
-                val location = result!!.getLocation()
-                if (location != null && result.getConfidence()!! >= minimumConfidence) {
+            for (result in results) {
+                val location = result.getLocation()
+                if (location != null && result.getConfidence() >= minimumConfidence) {
                     cpyCanvas.drawRect(location, paint)
                     cropToFrameTransform.mapRect(location)
                     result.setLocation(location)
                     mappedRecognitions.add(result)
                 }
             }
-            tracker.trackResults(mappedRecognitions.toList(), currTimestamp)
+            tracker.trackResults(mappedRecognitions, currTimestamp)
             trackingOverlay.postInvalidate()
             computingDetection = false
             runOnUiThread {

@@ -4,8 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.RectF
 
 interface Detector {
-    fun recognizeImage(bitmap: Bitmap?): List<Recognition?>?
-    fun enableStatLogging(debug: Boolean)
+    fun recognizeImage(bitmap: Bitmap): List<Recognition>
+    fun enableStatLogging(logStats: Boolean)
     fun getStatString(): String
 
     fun close()
@@ -24,7 +24,7 @@ interface Detector {
         /**
          * A sortable score for how good the recognition is relative to others. Higher should be better.
          */
-        private var confidence: Float?,
+        private var confidence: Float,
         /** Optional location within the source image for the location of the recognized object.  */
         private var location: RectF?
     ) {
@@ -37,7 +37,7 @@ interface Detector {
             return title
         }
 
-        fun getConfidence(): Float? {
+        fun getConfidence(): Float {
             return confidence
         }
 
@@ -48,14 +48,11 @@ interface Detector {
         }
 
         override fun toString(): String {
-            var resultString = ""
-            resultString += "[$id] "
-            resultString += "$title "
-            confidence?.let { resultString += String.format("(%.1f%%) ", it * 100.0f) }
-            if (location != null) {
-                resultString += location.toString() + " "
+            confidence?.let {
+                val confidenceStr = String.format("(%.1f%%) ", it * 100.0f)
+                return "[$id] $title $confidenceStr $location".trim()
             }
-            return resultString.trim { it <= ' ' }
+            return ""
         }
     }
 }

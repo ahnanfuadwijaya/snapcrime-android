@@ -4,8 +4,8 @@ import android.graphics.*
 import java.util.*
 
 class BorderedText(
-    val interiorColor: Int,
-    val exteriorColor: Int,
+    interiorColor: Int,
+    exteriorColor: Int,
     private val textSize: Float
 ) {
     private val interiorPaint = Paint()

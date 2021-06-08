@@ -5,6 +5,8 @@ import android.graphics.Matrix
 import android.os.Environment
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.math.abs
+import kotlin.math.max
 
 object ImageUtils {
     const val kMaxChannelValue = 262143
@@ -27,16 +29,15 @@ object ImageUtils {
 
     fun saveBitmap(bitmap: Bitmap, filename: String) {
         val root =
-            Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "tensorflow";
-        LOGGER.i("Saving %dx%d bitmap to %s.", bitmap.getWidth(), bitmap.getHeight(), root)
+            "${Environment.getExternalStorageDirectory().absolutePath}${File.separator}tensorflow";
+        LOGGER.i("Saving %dx%d bitmap to %s.", bitmap.width, bitmap.height, root)
         val myDir = File(root)
 
         if (!myDir.mkdirs()) {
             LOGGER.i("Make dir failed")
         }
 
-        val fname = filename
-        val file = File(myDir, fname)
+        val file = File(myDir, filename)
         if (file.exists()) {
             file.delete()
         }
@@ -51,9 +52,10 @@ object ImageUtils {
     }
 
     fun convertYUV420SPToARGB8888(input: ByteArray, width: Int, height: Int, output: IntArray) {
-        val frameSize = width * height;
+        val frameSize = width * height
+
         for(j in 0 until height){
-            val yp = 0
+            var yp = j
             var uvp = frameSize + (j shr 1) * width
             var u = 0
             var v = 0
@@ -64,25 +66,16 @@ object ImageUtils {
                     u = 0xff and input[uvp++].toInt()
                 }
                 output[yp] = YUV2RGB(y, u, v)
+                yp++
             }
         }
     }
 
     fun YUV2RGB(_y: Int, _u: Int, _v: Int): Int{
         // Adjust and check YUV values
-
-        // Adjust and check YUV values
-        val y = if (_y - 16 < 0) 0 else _y - 16
-        var u = _u
-        u -= 128
-        var v = _v
-        v -= 128
-
-        // This is the floating point equivalent. We do the conversion in integer
-        // because some Android devices do not have floating point in hardware.
-        // nR = (int)(1.164 * nY + 2.018 * nU);
-        // nG = (int)(1.164 * nY - 0.813 * nV - 0.391 * nU);
-        // nB = (int)(1.164 * nY + 1.596 * nV);
+        val y = if ((_y - 16) < 0) 0 else (_y - 16)
+        val u = _u - 128
+        val v = _v - 128
 
         // This is the floating point equivalent. We do the conversion in integer
         // because some Android devices do not have floating point in hardware.
@@ -95,19 +88,17 @@ object ImageUtils {
         var b = y1192 + 2066 * u
 
         // Clipping RGB values to be inside boundaries [ 0 , kMaxChannelValue ]
-
-        // Clipping RGB values to be inside boundaries [ 0 , kMaxChannelValue ]
         r = if (r > kMaxChannelValue) kMaxChannelValue else if (r < 0) 0 else r
         g = if (g > kMaxChannelValue) kMaxChannelValue else if (g < 0) 0 else g
         b = if (b > kMaxChannelValue) kMaxChannelValue else if (b < 0) 0 else b
 
-        return -0x1000000 or (r shl 6 and 0xff0000) or (g shr 2 and 0xff00) or (b shr 10 and 0xff)
+        return 0xFF000000.toInt() or (r shl 6 and 0xff0000) or (g shr 2 and 0xff00) or (b shr 10 and 0xff)
     }
 
     fun convertYUV420ToARGB8888(
-        yData: ByteArray?,
-        uData: ByteArray?,
-        vData: ByteArray?,
+        yData: ByteArray,
+        uData: ByteArray,
+        vData: ByteArray,
         width: Int,
         height: Int,
         yRowStride: Int,
@@ -122,8 +113,8 @@ object ImageUtils {
             for (i in 0 until width) {
                 val uvOffset = pUV + (i shr 1) * uvPixelStride
                 out[yp++] = YUV2RGB(
-                    0xff and (yData?.get(pY + i)?.toInt()!!), 0xff and (uData?.get(uvOffset)
-                        ?.toInt()!!), 0xff and (vData?.get(uvOffset)?.toInt()!!)
+                    0xff and (yData[pY + i].toInt()), 0xff and (uData[uvOffset]
+                        .toInt()), 0xff and (vData[uvOffset].toInt())
                 )
             }
         }
@@ -153,15 +144,10 @@ object ImageUtils {
 
         // Account for the already applied rotation, if any, and then determine how
         // much scaling is needed for each axis.
-
-        // Account for the already applied rotation, if any, and then determine how
-        // much scaling is needed for each axis.
-        val transpose = (Math.abs(applyRotation) + 90) % 180 == 0
+        val transpose = (abs(applyRotation) + 90) % 180 == 0
 
         val inWidth = if (transpose) srcHeight else srcWidth
         val inHeight = if (transpose) srcWidth else srcHeight
-
-        // Apply scaling if necessary.
 
         // Apply scaling if necessary.
         if (inWidth != dstWidth || inHeight != dstHeight) {
@@ -170,7 +156,7 @@ object ImageUtils {
             if (maintainAspectRatio) {
                 // Scale by minimum factor so that dst is filled completely while
                 // maintaining the aspect ratio. Some image may fall off the edge.
-                val scaleFactor = Math.max(scaleFactorX, scaleFactorY)
+                val scaleFactor = max(scaleFactorX, scaleFactorY)
                 matrix.postScale(scaleFactor, scaleFactor)
             } else {
                 // Scale exactly to fill dst from src.

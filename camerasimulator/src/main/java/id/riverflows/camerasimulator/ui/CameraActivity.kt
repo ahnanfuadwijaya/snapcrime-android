@@ -26,20 +26,24 @@ import java.nio.ByteBuffer
 abstract class CameraActivity: AppCompatActivity(), CompoundButton.OnCheckedChangeListener, ImageReader.OnImageAvailableListener, Camera.PreviewCallback, View.OnClickListener {
     protected var previewWidth = 0
     protected var previewHeight = 0
+    private var yRowStride = 0
+
     private var debug = false
+    private var useCamera2API = false
+    private var isProcessingFrame = false
+
     private var handler: Handler? = null
     private var handlerThread: HandlerThread? = null
-    private var useCamera2API = true
-    private var isProcessingFrame = false
-    private val yuvBytes = arrayOfNulls<ByteArray>(3)
-    private lateinit var rgbBytes: IntArray
-    private var yRowStride = 0
     private var postInferenceCallback: Runnable? = null
-    private lateinit var imageConverter: Runnable
+    private var imageConverter: Runnable? = null
+
+    private val yuvBytes = Array(3){ ByteArray(0) }
+
+    private var rgbBytes: IntArray? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         LOGGER.d("onCreate $this")
-        super.onCreate(savedInstanceState)
+        super.onCreate(null)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         setContentView(R.layout.activity_simulator_main)
@@ -63,8 +67,8 @@ abstract class CameraActivity: AppCompatActivity(), CompoundButton.OnCheckedChan
     override fun onResume() {
         super.onResume()
         handlerThread = HandlerThread("inference")
-        handlerThread?.start()
         handlerThread?.let {
+            it.start()
             handler = Handler(it.looper)
         }
     }
@@ -72,14 +76,15 @@ abstract class CameraActivity: AppCompatActivity(), CompoundButton.OnCheckedChan
     @Synchronized
     override fun onPause() {
         LOGGER.d("onPause $this")
-
-        handlerThread?.quitSafely()
-        try {
-            handlerThread?.join()
-            handlerThread = null
-            handler = null
-        } catch (e: InterruptedException) {
-            LOGGER.e(e, "Exception!")
+        handlerThread?.let {
+            it.quitSafely()
+            try {
+                it.join()
+                handlerThread = null
+                handler = null
+            } catch (e: InterruptedException) {
+                LOGGER.e(e, "Exception!")
+            }
         }
         super.onPause()
     }
@@ -101,19 +106,20 @@ abstract class CameraActivity: AppCompatActivity(), CompoundButton.OnCheckedChan
         handler?.post(r)
     }
 
-    override fun onPreviewFrame(data: ByteArray, camera: Camera?) {
+    override fun onPreviewFrame(data: ByteArray, camera: Camera) {
         if (isProcessingFrame) {
             LOGGER.w("Dropping frame!")
             return
         }
 
         try {
-            // Initialize the storage bitmaps once when the resolution is known.
-            val previewSize = camera?.parameters?.previewSize
-            previewHeight = previewSize?.height ?: 0
-            previewWidth = previewSize?.width ?: 0
-            rgbBytes = IntArray(previewWidth * previewHeight)
-            onPreviewSizeChosen(Size(previewSize?.width ?: 0, previewSize?.height ?: 0), 90)
+            if(rgbBytes == null){
+                val previewSize = camera.parameters.previewSize
+                previewHeight = previewSize.height
+                previewWidth = previewSize.width
+                rgbBytes = IntArray(previewWidth * previewHeight)
+                onPreviewSizeChosen(Size(previewSize.width, previewSize.height), 90)
+            }
         } catch (e: Exception) {
             LOGGER.e(e, "Exception!")
             return
@@ -123,30 +129,34 @@ abstract class CameraActivity: AppCompatActivity(), CompoundButton.OnCheckedChan
         yuvBytes[0] = data
         yRowStride = previewWidth
 
-        imageConverter = Runnable {
-            ImageUtils.convertYUV420SPToARGB8888(
-                data,
-                previewWidth,
-                previewHeight,
-                rgbBytes
-            )
+        rgbBytes?.let {
+            imageConverter = Runnable {
+                ImageUtils.convertYUV420SPToARGB8888(
+                    data,
+                    previewWidth,
+                    previewHeight,
+                    it
+                )
+            }
         }
 
         postInferenceCallback = Runnable {
-            camera!!.addCallbackBuffer(data)
+            camera.addCallbackBuffer(data)
             isProcessingFrame = false
         }
         processImage()
     }
 
-    override fun onImageAvailable(reader: ImageReader?) {
+    override fun onImageAvailable(reader: ImageReader) {
         // We need wait until we have some size from onPreviewSizeChosen
         if (previewWidth == 0 || previewHeight == 0) {
             return
         }
-        rgbBytes = IntArray(previewWidth * previewHeight)
+        if(rgbBytes == null){
+            rgbBytes = IntArray(previewWidth * previewHeight)
+        }
         try {
-            val image = reader!!.acquireLatestImage() ?: return
+            val image = reader.acquireLatestImage() ?: return
             if (isProcessingFrame) {
                 image.close()
                 return
@@ -158,18 +168,21 @@ abstract class CameraActivity: AppCompatActivity(), CompoundButton.OnCheckedChan
             yRowStride = planes[0].rowStride
             val uvRowStride = planes[1].rowStride
             val uvPixelStride = planes[1].pixelStride
-            imageConverter = Runnable {
-                ImageUtils.convertYUV420ToARGB8888(
-                    yuvBytes[0],
-                    yuvBytes[1],
-                    yuvBytes[2],
-                    previewWidth,
-                    previewHeight,
-                    yRowStride,
-                    uvRowStride,
-                    uvPixelStride,
-                    rgbBytes
-                )
+
+            rgbBytes?.let {
+                imageConverter = Runnable {
+                    ImageUtils.convertYUV420ToARGB8888(
+                        yuvBytes[0],
+                        yuvBytes[1],
+                        yuvBytes[2],
+                        previewWidth,
+                        previewHeight,
+                        yRowStride,
+                        uvRowStride,
+                        uvPixelStride,
+                        it
+                    )
+                }
             }
             postInferenceCallback = Runnable {
                 image.close()
@@ -184,17 +197,14 @@ abstract class CameraActivity: AppCompatActivity(), CompoundButton.OnCheckedChan
         Trace.endSection()
     }
 
-    protected fun fillBytes(planes: Array<Image.Plane>, yuvBytes: Array<ByteArray?>){
+    protected fun fillBytes(planes: Array<Image.Plane>, yuvBytes: Array<ByteArray>){
         // Because of the variable row stride it's not possible to know in
         // advance the actual necessary dimensions of the yuv planes.
         for (i in planes.indices) {
             val buffer: ByteBuffer = planes[i].buffer
             LOGGER.d("Initializing buffer %d at size %d", i, buffer.capacity())
             yuvBytes[i] = ByteArray(buffer.capacity())
-            if(yuvBytes[i] != null)
-            yuvBytes[i]?.let {
-                buffer.get(it)
-            }
+            buffer.get(yuvBytes[i])
         }
     }
 
@@ -204,8 +214,8 @@ abstract class CameraActivity: AppCompatActivity(), CompoundButton.OnCheckedChan
 
 
 
-    protected fun getRgbBytes(): IntArray{
-        imageConverter.run()
+    protected fun getRgbBytes(): IntArray?{
+        imageConverter?.run()
         return rgbBytes
     }
 
@@ -287,6 +297,7 @@ abstract class CameraActivity: AppCompatActivity(), CompoundButton.OnCheckedChan
                     continue
                 }
                 characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP) ?: continue
+
 
                 // Fallback to camera1 API for internal cameras that don't have full support.
                 // This should help with legacy situations where using the camera2 API causes

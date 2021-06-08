@@ -1,5 +1,4 @@
 include ':app'
 rootProject.name = "SnapCrime"
 include ':camerasimulator'
-include ':lib_interpreter'
 include ':lib_task_api'

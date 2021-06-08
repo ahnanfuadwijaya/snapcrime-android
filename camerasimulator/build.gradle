@@ -66,7 +66,6 @@ apply from:'../download_model.gradle'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar','*.aar'])
-    interpreterImplementation project(":lib_interpreter")
     taskApiImplementation project(":lib_task_api")
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.5.0'

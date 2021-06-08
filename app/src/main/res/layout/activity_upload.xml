@@ -85,13 +85,25 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_create_report"
         style="@style/WideButton"
-        tools:enabled="true"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/title_create_report"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/progress_upload"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/container_images_preview" />
+        app:layout_constraintTop_toBottomOf="@+id/container_images_preview"
+        tools:enabled="true" />
+
+    <ProgressBar
+        android:id="@+id/progress_upload"
+        android:visibility="invisible"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="24dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_create_report"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_create_report" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
