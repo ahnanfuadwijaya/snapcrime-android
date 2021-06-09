@@ -4,8 +4,12 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import id.riverflows.snapcrime.app.SnapCrime
 import id.riverflows.snapcrime.databinding.ActivityLoginBinding
 import id.riverflows.snapcrime.ui.home.HomeActivity
+import id.riverflows.snapcrime.util.UtilConstants
+import id.riverflows.snapcrime.util.UtilDummyData.PASSWORD
+import id.riverflows.snapcrime.util.UtilDummyData.USERNAME
 
 class LoginActivity : AppCompatActivity() {
 
@@ -24,11 +28,14 @@ class LoginActivity : AppCompatActivity() {
         bind.btnLogin.setOnClickListener {
             if(gmail.text.trim().isEmpty() || password.text.trim().isEmpty()){
                 Toast.makeText(this,"Empty",Toast.LENGTH_LONG).show()
-            }else if (gmail.text.toString() == "bangkit" && password.text.toString() == "12345"){
+            }else if (gmail.text.toString() == USERNAME && password.text.toString() == PASSWORD){
+                SnapCrime.getDefaultSharedPreference(this).edit().apply {
+                    putString(UtilConstants.PREF_AUTH_TOKEN, "lOginToken")
+                }.apply()
                 startActivity(Intent(this, HomeActivity::class.java))
             }else
                 Toast.makeText(this,"Something wrong",Toast.LENGTH_LONG).show()
         }
-
+        finish()
     }
 }

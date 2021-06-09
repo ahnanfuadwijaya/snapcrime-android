@@ -4,46 +4,28 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.util.Util
 import id.riverflows.snapcrime.R
 import id.riverflows.snapcrime.data.Case
 import id.riverflows.snapcrime.ui.adapter.ListCaseAdapter
 import id.riverflows.snapcrime.ui.detail.DetailActivity
 import id.riverflows.snapcrime.ui.upload.UploadActivity
 import id.riverflows.snapcrime.util.UtilConstants
+import id.riverflows.snapcrime.util.UtilDummyData
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity(), ListCaseAdapter.OnItemClickCallback {
-    private val list = ArrayList<Case>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         fab_create_report.setOnClickListener { moveToUpload() }
         rvCase.setHasFixedSize(true)
-        list.addAll(getListCasees())
         showRecyclerList()
-    }
-
-    fun getListCasees(): ArrayList<Case> {
-        val datadate = resources.getStringArray(R.array.data_date)
-        val datalocation = resources.getStringArray(R.array.data_location)
-        val datalable = resources.getStringArray(R.array.data_lable)
-        val listCase = ArrayList<Case>()
-        for (position in datadate.indices) {
-            val Case = Case(
-                (position+1).toLong(),
-                datadate[position],
-                datalocation[position],
-                datalable[position],
-                "sample_image"
-            )
-            listCase.add(Case)
-        }
-        return listCase
     }
 
     private fun showRecyclerList() {
         rvCase.layoutManager = LinearLayoutManager(this)
-        val listCaseAdapter = ListCaseAdapter(list)
+        val listCaseAdapter = ListCaseAdapter(UtilDummyData.getDetailCasesList())
         listCaseAdapter.setOnItemClickCallback(this)
         rvCase.adapter = listCaseAdapter
     }

@@ -35,14 +35,16 @@
             android:layout_height="match_parent"
             tools:listitem="@layout/item_row"/>
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            style="@style/ExtendedFab"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_create_report"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_margin="32dp"
             app:cornerRadius="12dp"
-            app:icon="@drawable/ic_create"/>
+            app:srcCompat="@drawable/ic_create"
+            app:tint="@color/white"
+            app:backgroundTint="@color/black"
+            tools:ignore="ContentDescription" />
     </FrameLayout>
 </LinearLayout>

@@ -8,6 +8,7 @@ object UtilConstants {
     const val UPLOAD_IMAGES_MAX = 3
     const val DATE_FORMAT = "dd-MM-yyyy"
     const val EXTRA_CASE_ID = "extra_case_id"
+    const val PREF_AUTH_TOKEN = "auth_token"
     const val PREF_FCM_TOKEN = "fcm_token"
     const val FCM_TOPIC_CASES_REPORT = "cases-report"
 }

@@ -10,32 +10,34 @@ import id.riverflows.snapcrime.data.response.LoginResponse
 import id.riverflows.snapcrime.data.response.UploadCaseResponse
 
 object UtilDummyData {
+    const val USERNAME = "bangkit"
+    const val PASSWORD = "12345"
     private val casesList: List<Case> = listOf(
         Case(
             1L,
-            "21 Mei 2021",
-            "Jl. Medan Merdeka Timur No. 1",
+            "06  2021",
+            "Jl. Ahmad Yani",
             "Pistol",
             "sample_image"
         ),
         Case(
             2L,
             "21 Mei 2021",
-            "Jl. Medan Merdeka Timur No. 1",
+            "Jl. Stasiun Wonokromo",
             "Pistol",
             "sample_image"
         ),
         Case(
             3L,
             "21 Mei 2021",
-            "Jl. Medan Merdeka Timur No. 1",
+            "Jl. Mastrip",
             "Pistol",
             "sample_image"
         ),
         Case(
             4L,
             "21 Mei 2021",
-            "Jl. Medan Merdeka Timur No. 1",
+            "Jl. Gunungsari",
             "Pistol",
             "sample_image"
         ),
@@ -99,99 +101,91 @@ object UtilDummyData {
     private val detailCasesList: List<DetailCase> = listOf(
         DetailCase(
             1L,
-            "21 Mei 2021",
-            "Jl. Medan Merdeka Timur No. 1",
+            "06 Juni 2021",
+            "Jl. Ahmad Yani",
             "Pistol",
             "Selesai",
-            "sample_image"
+            "handgun_01"
         ),
         DetailCase(
             2L,
-            "21 Mei 2021",
-            "Jl. Medan Merdeka Timur No. 1",
+            "06 Juni 2021",
+            "Jl. Stasiun Wonokromo",
             "Pistol",
             "Selesai",
-            "sample_image"
+            "handgun_02"
         ),
         DetailCase(
             3L,
-            "21 Mei 2021",
-            "Jl. Medan Merdeka Timur No. 1",
+            "04 Juni 2021",
+            "Jl. Mastrip",
             "Pistol",
             "Selesai",
-            "sample_image"
+            "handgun_03"
         ),
         DetailCase(
             4L,
-            "21 Mei 2021",
-            "Jl. Medan Merdeka Timur No. 1",
+            "29 Mei 2021",
+            "Jl. Hayam Wuruk",
             "Pistol",
             "Selesai",
-            "sample_image"
+            "handgun_04"
         ),
         DetailCase(
             5L,
-            "21 Mei 2021",
-            "Jl. Medan Merdeka Timur No. 1",
+            "27 Mei 2021",
+            "Jl. Pulo Wonokromo",
             "Pistol",
             "Selesai",
-            "sample_image"
+            "handgun_05"
         ),
         DetailCase(
             6L,
             "21 Mei 2021",
-            "Jl. Medan Merdeka Timur No. 1",
+            "Jl. Mayjen Sungkono",
             "Pistol",
             "Selesai",
-            "sample_image"
+            "handgun_06"
         ),
         DetailCase(
             7L,
-            "21 Mei 2021",
-            "Jl. Medan Merdeka Timur No. 1",
-            "Pistol",
+            "18 Mei 2021",
+            "Jl. Ngagel Jaya Selatan",
+            "Pisau",
             "Selesai",
-            "sample_image"
+            "knife_01"
         ),
         DetailCase(
             8L,
-            "21 Mei 2021",
-            "Jl. Medan Merdeka Timur No. 1",
-            "Pistol",
+            "15 Mei 2021",
+            "Jl. Kupang Gunung",
+            "Pisau",
             "Selesai",
-            "sample_image"
+            "knife_02"
         ),
         DetailCase(
             9L,
-            "21 Mei 2021",
-            "Jl. Medan Merdeka Timur No. 1",
-            "Pistol",
+            "14 Mei 2021",
+            "Jl. Mayjen HR. Mohammad",
+            "Pisau",
             "Selesai",
-            "sample_image"
+            "knife_03"
         ),
         DetailCase(
             10L,
-            "21 Mei 2021",
-            "Jl. Medan Merdeka Timur No. 1",
-            "Pistol",
+            "12 Mei 2021",
+            "Jl. Wisma Lidah Kulon",
+            "Pisau",
             "Selesai",
-            "sample_image"
+            "knife_04"
         ),
         DetailCase(
             11L,
-            "21 Mei 2021",
-            "Jl. Medan Merdeka Timur No. 1",
-            "Pistol",
+            "09 Mei 2021",
+            "Jl. Wonorejo Rungkut",
+            "Pisau",
             "Selesai",
-            "sample_image"
-        ),
-        DetailCase(
-            12L,
-            "21 Mei 2021",
-            "Jl. Medan Merdeka Timur No. 1",
-            "Pistol",
-            "Selesai",
-            "sample_image"
+            "knife_05"
         )
     )
     fun getAuthLoginResponse(username: String, password: String): LoginResponse{
@@ -218,6 +212,7 @@ object UtilDummyData {
         "Request Success",
         casesList
     )
+    fun getDetailCasesList(): List<DetailCase> = detailCasesList
     fun getDetailCaseResponse(id: Long): DetailCaseResponse{
         val data = detailCasesList.firstOrNull { it.id == id }
         return data?.let {

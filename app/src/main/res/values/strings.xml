@@ -22,6 +22,8 @@
     <string name="error_unknown">Terjadi masalah</string>
     <string name="error_upload_limit">Mencapai batas unggah file</string>
     <string name="error_no_data">Tidak ada data</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_username">Username</string>
 
 
     <string-array name="data_date">

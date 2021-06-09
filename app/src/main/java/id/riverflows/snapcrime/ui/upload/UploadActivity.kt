@@ -64,7 +64,7 @@ class UploadActivity : AppCompatActivity(), SingleTextInputDialog.OnSubmitSingle
             setEnableCreateReportButton(false)
             showUploadProgressBar(true)
             uploadData()
-            lifecycleScope.launch(Dispatchers.IO){
+            lifecycleScope.launch(Dispatchers.Main){
                 delay(4000)
                 showUploadProgressBar(false)
                 setEnableCreateReportButton(true)

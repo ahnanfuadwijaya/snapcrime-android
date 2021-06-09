@@ -4,11 +4,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import id.riverflows.snapcrime.R
 import id.riverflows.snapcrime.data.Case
+import id.riverflows.snapcrime.data.DetailCase
+import id.riverflows.snapcrime.util.UtilConstants
 import kotlinx.android.synthetic.main.item_row.view.*
 
-class ListCaseAdapter(private val listCase: ArrayList<Case>) : RecyclerView.Adapter<ListCaseAdapter.ListViewHolder>() {
+class ListCaseAdapter(private val listCase: List<DetailCase>) : RecyclerView.Adapter<ListCaseAdapter.ListViewHolder>() {
     private lateinit var onItemClickCallback: OnItemClickCallback
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback){
@@ -27,8 +31,17 @@ class ListCaseAdapter(private val listCase: ArrayList<Case>) : RecyclerView.Adap
     override fun getItemCount(): Int = listCase.size
 
     inner class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(case: Case) {
+        fun bind(case: DetailCase) {
+            val context = itemView.context
+            val imageResource = context.resources.getIdentifier(case.imageUrl,
+                UtilConstants.DEF_TYPE_RAW, context.packageName)
             with(itemView){
+                Glide.with(context)
+                    .load(imageResource)
+                    .apply(RequestOptions()
+                        .placeholder(R.drawable.ic_loading)
+                        .error(R.drawable.ic_broken_image))
+                    .into(iivPhoto)
                 tvDate.text = case.date
                 tvLocation.text = case.location
                 tvLable.text = case.label

@@ -8,6 +8,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import id.riverflows.snapcrime.R
 import id.riverflows.snapcrime.data.DetailCase
 import id.riverflows.snapcrime.databinding.ActivityDetailBinding
+import id.riverflows.snapcrime.util.UtilConstants
 import id.riverflows.snapcrime.util.UtilConstants.BOTT_SHEET_PEEK_HEIGHT
 import id.riverflows.snapcrime.util.UtilConstants.DEF_TYPE_RAW
 import id.riverflows.snapcrime.util.UtilSnackBar.showIndeterminateSnackBar
@@ -51,7 +52,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun requestData(){
-        val id = 1L
+        val id = intent.getLongExtra(UtilConstants.EXTRA_CASE_ID, 1L)
         viewModel.getDetailCaseResponse(id)
     }
 
