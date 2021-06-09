@@ -1,6 +1,7 @@
 package id.riverflows.snapcrime.ui.splash
 
 import android.content.Intent
+import android.content.Intent.*
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -22,14 +23,15 @@ class SplashActivity : AppCompatActivity() {
         setContentView(binding.root)
         lifecycleScope.launch(Dispatchers.Main){
             delay(SPLASH_DURATION)
-            val pref = SnapCrime.getDefaultSharedPreference(this@SplashActivity)
+            val pref = SnapCrime.getDefaultSharedPreference(applicationContext)
             val token = pref.getString(UtilConstants.PREF_AUTH_TOKEN, "") ?: ""
             if(token.isBlank()){
-                startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
+                Intent(this@SplashActivity, LoginActivity::class.java)
             }else{
-                startActivity(Intent(this@SplashActivity, HomeActivity::class.java))
-            }
-            finish()
+                Intent(this@SplashActivity, HomeActivity::class.java)
+            }.apply {
+                flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
+            }.also { startActivity(it) }
         }
     }
 }

@@ -19,7 +19,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLoginBinding .inflate(layoutInflater)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(bind.root)
 
         // for login
@@ -32,10 +32,13 @@ class LoginActivity : AppCompatActivity() {
                 SnapCrime.getDefaultSharedPreference(this).edit().apply {
                     putString(UtilConstants.PREF_AUTH_TOKEN, "lOginToken")
                 }.apply()
-                startActivity(Intent(this, HomeActivity::class.java))
+                startActivity(
+                    Intent(this, HomeActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+                )
             }else
                 Toast.makeText(this,"Something wrong",Toast.LENGTH_LONG).show()
         }
-        finish()
     }
 }
