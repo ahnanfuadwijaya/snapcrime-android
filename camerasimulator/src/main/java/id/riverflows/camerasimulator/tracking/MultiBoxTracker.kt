@@ -10,7 +10,7 @@ import android.util.TypedValue
 import id.riverflows.camerasimulator.env.BorderedText
 import id.riverflows.camerasimulator.env.ImageUtils
 import id.riverflows.camerasimulator.env.Logger
-import id.riverflows.lib_task_api.detection.tflite.Detector.Recognition
+import id.riverflows.lib_task_api.detection.tflite.DetectorKt.Recognition
 import java.util.*
 
 class MultiBoxTracker(context: Context) {
@@ -118,22 +118,22 @@ class MultiBoxTracker(context: Context) {
         val rgbFrameToScreen = Matrix(getFrameToCanvasMatrix())
 
         for (result in results) {
-            val detectionFrameRect = RectF(result.getLocation())
+            val detectionFrameRect = RectF(result.location)
 
             val detectionScreenRect = RectF()
             rgbFrameToScreen.mapRect(detectionScreenRect, detectionFrameRect)
 
             logger.v(
-                "Result! Frame: " + result.getLocation() + " mapped to screen:" + detectionScreenRect)
+                "Result! Frame: " + result.location + " mapped to screen:" + detectionScreenRect)
 
-            screenRect.add(Pair<Float, RectF>(result.getConfidence(), detectionScreenRect))
+            screenRect.add(Pair<Float, RectF>(result.confidence, detectionScreenRect))
 
             if (detectionFrameRect.width() < MIN_SIZE || detectionFrameRect.height() < MIN_SIZE) {
                 logger.w("Degenerate rectangle! " + detectionFrameRect)
                 continue
             }
 
-            rectToTrack.add(Pair<Float, Recognition>(result.getConfidence(), result))
+            rectToTrack.add(Pair<Float, Recognition>(result.confidence, result))
         }
 
         trackedObjects.clear();
@@ -145,8 +145,8 @@ class MultiBoxTracker(context: Context) {
         for (potential in rectToTrack) {
             val trackedRecognition = TrackedRecognition();
             trackedRecognition.detectionConfidence = potential.first
-            trackedRecognition.location = RectF(potential.second.getLocation())
-            trackedRecognition.title = potential.second.getTitle()
+            trackedRecognition.location = RectF(potential.second.location)
+            trackedRecognition.title = potential.second.title
             trackedRecognition.color = COLORS[trackedObjects.size]
             trackedObjects.add(trackedRecognition)
 

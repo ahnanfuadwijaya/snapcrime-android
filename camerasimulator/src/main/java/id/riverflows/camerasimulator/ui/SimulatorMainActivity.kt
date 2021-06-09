@@ -13,10 +13,9 @@ import id.riverflows.camerasimulator.env.BorderedText
 import id.riverflows.camerasimulator.env.ImageUtils
 import id.riverflows.camerasimulator.env.Logger
 import id.riverflows.camerasimulator.tracking.MultiBoxTracker
-import id.riverflows.lib_task_api.detection.tflite.Detector
-import id.riverflows.lib_task_api.detection.tflite.TFLiteObjectDetectionAPIModel
+import id.riverflows.lib_task_api.detection.tflite.DetectorKt
+import id.riverflows.lib_task_api.detection.tflite.TFLiteObjectDetectionAPIModelKt
 import java.io.IOException
-import java.util.*
 import kotlin.collections.ArrayList
 
 class SimulatorMainActivity : CameraActivity(), OnImageAvailableListener {
@@ -25,7 +24,7 @@ class SimulatorMainActivity : CameraActivity(), OnImageAvailableListener {
     }
     private lateinit var trackingOverlay: OverlayView
     private var sensorOrientation: Int = 0
-    private lateinit var detector: Detector
+    private lateinit var detector: DetectorKt
     private var lastProcessingTimeMs: Long = 0
     private lateinit var rgbFrameBitmap: Bitmap
     private lateinit var croppedBitmap: Bitmap
@@ -92,14 +91,14 @@ class SimulatorMainActivity : CameraActivity(), OnImageAvailableListener {
             when (MODE) {
                 DetectorMode.TF_OD_API -> minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API
             }
-            val mappedRecognitions: ArrayList<Detector.Recognition> =
+            val mappedRecognitions: ArrayList<DetectorKt.Recognition> =
                 ArrayList()
             for (result in results) {
-                val location = result.getLocation()
-                if (location != null && result.getConfidence() >= minimumConfidence) {
+                val location = result.location
+                if (location != null && result.confidence >= minimumConfidence) {
                     cpyCanvas.drawRect(location, paint)
                     cropToFrameTransform.mapRect(location)
-                    result.setLocation(location)
+                    result.location = location
                     mappedRecognitions.add(result)
                 }
             }
@@ -135,7 +134,7 @@ class SimulatorMainActivity : CameraActivity(), OnImageAvailableListener {
             TF_OD_API_INPUT_SIZE
 
         try {
-            detector = TFLiteObjectDetectionAPIModel.create(
+            detector = TFLiteObjectDetectionAPIModelKt.create(
                 this,
                 TF_OD_API_MODEL_FILE,
                 TF_OD_API_LABELS_FILE,

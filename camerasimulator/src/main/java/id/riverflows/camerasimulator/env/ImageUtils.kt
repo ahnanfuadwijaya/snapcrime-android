@@ -10,7 +10,7 @@ import kotlin.math.max
 
 object ImageUtils {
     const val kMaxChannelValue = 262143
-    val LOGGER = Logger()
+    private val LOGGER = Logger()
 
     fun getYUVByteSize(width: Int, height: Int): Int {
         // The luminance plane requires 1 byte per pixel.

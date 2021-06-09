@@ -2,3 +2,4 @@ include ':app'
 rootProject.name = "SnapCrime"
 include ':camerasimulator'
 include ':lib_task_api'
+include ':camerasimulatorjava'
